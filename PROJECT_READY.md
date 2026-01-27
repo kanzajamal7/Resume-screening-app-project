@@ -193,7 +193,7 @@ Resume-screening-app-project/
 ✅ **Production-Ready** - Tested and documented  
 ✅ **Type-Safe** - Full TypeScript throughout  
 ✅ **Responsive** - Mobile, tablet, desktop support  
-✅ **No AI/LLM** - Pure rule-based matching (no hallucinations)  
+✅ **Rule-Based** - Explainable, transparent scoring logic  
 
 ---
 

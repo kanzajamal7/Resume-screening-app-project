@@ -476,9 +476,9 @@ test_scoring_engine.py::TestKeywordExtractor::test_extract_must_haves PASSED
 ======================== 15 passed in 0.52s ========================
 ```
 
-## 🔐 Non-Hallucination Guarantees
+## Data Integrity & Verification
 
-The system is designed to **never fabricate information**:
+The system maintains strict accuracy standards:
 
 ### Strict Rules
 

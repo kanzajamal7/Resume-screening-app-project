@@ -318,10 +318,6 @@ UVICORN_PORT=8000
 
 # CORS
 CORS_ORIGINS=["http://localhost:5173", "http://localhost:3000"]
-
-# Optional: LLM Integration (not required)
-# LLM_PROVIDER=openai
-# LLM_API_KEY=your_key_here
 ```
 
 See `backend/.env.example` for full configuration options.
@@ -445,8 +441,6 @@ A: Yes, edit scoring weights in admin panel or code in `backend/app/scoring_engi
 **Q: Can I add more file formats?**  
 A: Yes, add parsing logic in `backend/app/file_parser.py`.
 
-**Q: Is there an LLM integration?**  
-A: Optional LLM integration available - see ARCHITECTURE.md.
 
 ## 📝 License
 

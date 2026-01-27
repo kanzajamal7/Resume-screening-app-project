@@ -317,7 +317,6 @@
 - [x] No fabricated experience
 - [x] Evidence snippets shown
 - [x] Missing items marked as "missing"
-- [x] No AI/LLM by default
 - [x] Rule-based and explainable
 
 ## ✨ Bonus Features Included

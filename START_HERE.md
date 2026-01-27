@@ -215,7 +215,7 @@ Great! You're ready to:
 [x] **Your Data is Safe** - Everything runs locally  
 [x] **Fast** - Results in <1 second  
 [x] **Explainable** - Every score includes reasoning  
-[x] **No AI/LLM** - Pure rule-based matching  
+[x] **Rule-Based** - Transparent, verifiable scoring  
 
 ---
 
