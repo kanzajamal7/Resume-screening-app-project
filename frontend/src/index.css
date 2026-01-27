@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.app {
+  min-height: 100vh;
+}
+
+.progress-bar {
+  @apply w-full bg-gray-200 rounded-full h-2;
+}
+
+.progress-fill {
+  @apply bg-blue-500 h-full rounded-full transition-all duration-300;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow p-6;
+}
+
+.button-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
+}
+
+.button-secondary {
+  @apply bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded;
+}
+
+.button-success {
+  @apply bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded;
+}
+
+.button-danger {
+  @apply bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded;
+}
+
+.text-success {
+  @apply text-green-600;
+}
+
+.text-warning {
+  @apply text-yellow-600;
+}
+
+.text-danger {
+  @apply text-red-600;
+}
+
+.loading-spinner {
+  @apply inline-block animate-spin;
+}

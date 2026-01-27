@@ -1,0 +1,35 @@
+Senior Data Engineer - Full-Time
+
+ABOUT THE ROLE
+We are seeking a Senior Data Engineer to join our Data Platform team. You will be responsible for designing, building, and maintaining scalable data pipelines that process petabytes of data daily.
+
+CORE RESPONSIBILITIES
+• Design and develop ETL pipelines using Apache Spark
+• Maintain and optimize SQL databases
+• Implement real-time data processing solutions
+• Collaborate with data scientists and analytics teams
+• Ensure data quality and pipeline reliability
+• Mentor junior engineers
+
+REQUIRED QUALIFICATIONS & MUST-HAVES
+• Minimum 5 years of experience as a Data Engineer
+• Expertise in Apache Spark and distributed computing
+• Strong SQL and database design skills
+• Experience with Python for data pipeline development
+• Familiarity with cloud platforms (AWS or GCP)
+• Experience with workflow orchestration tools (Airflow, Oozie)
+• Strong communication and teamwork skills
+• Bachelor's degree in Computer Science or related field
+
+PREFERRED QUALIFICATIONS & NICE-TO-HAVES
+• Experience with Kafka for streaming data
+• Knowledge of Informatica or Talend
+• AWS certification (Solutions Architect or Data Analytics)
+• Experience with containerization (Docker, Kubernetes)
+• Familiarity with Terraform for infrastructure-as-code
+• Machine learning pipeline experience
+
+NICE TO HAVE
+• Scala programming experience
+• Experience with MongoDB or NoSQL databases
+• Contributions to open-source projects

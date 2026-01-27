@@ -1,0 +1,48 @@
+JOHN DOE
+john.doe@email.com | (555) 123-4567 | LinkedIn.com/in/johndoe
+
+PROFESSIONAL SUMMARY
+Experienced Data Engineer with 6+ years of expertise in building scalable ETL pipelines and managing large-scale data infrastructure. Proficient in Python, Apache Spark, and cloud technologies (AWS). Strong background in SQL and data warehousing solutions.
+
+PROFESSIONAL EXPERIENCE
+
+Senior Data Engineer
+Tech Company Inc., San Francisco, CA
+January 2022 – Present (2 years)
+• Designed and implemented ETL pipeline using Apache Spark processing 500GB+ daily data
+• Optimized SQL queries reducing query execution time by 40%
+• Led migration of data infrastructure from on-premises to AWS
+• Mentored junior engineers on Spark optimization techniques
+• Managed Airflow workflows for job orchestration
+
+Data Engineer
+DataSoft Solutions, New York, NY
+June 2018 – December 2021 (3.5 years)
+• Developed Python-based data pipelines using Apache Spark and Hadoop
+• Implemented MySQL and PostgreSQL schemas for data warehousing
+• Created real-time dashboards using Tableau for business intelligence
+• Collaborated with analytics team to optimize data models
+• Experience with Git version control and Jenkins CI/CD
+
+Junior Data Engineer
+StartupXYZ, Remote
+January 2017 – May 2018 (1.5 years)
+• Wrote SQL queries and Python scripts for data extraction and transformation
+• Assisted in building distributed data processing systems
+• Participated in code reviews and agile development practices
+
+TECHNICAL SKILLS
+Languages: Python, SQL, Scala, Java
+Big Data Technologies: Apache Spark, Hadoop, Hive, Kafka
+Cloud Platforms: AWS (EC2, S3, RDS), basic GCP knowledge
+Databases: MySQL, PostgreSQL, MongoDB, Cassandra
+Tools & Platforms: Git, Docker, Jenkins, Airflow, DBT
+Data Warehousing: Teradata, Informatica (basic)
+
+EDUCATION
+Bachelor of Science in Computer Science
+State University, Graduated May 2016
+GPA: 3.6/4.0
+
+CERTIFICATIONS
+AWS Certified Solutions Architect – Associate (2021)
