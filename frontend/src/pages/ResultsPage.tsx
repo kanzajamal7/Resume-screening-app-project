@@ -108,21 +108,21 @@ export default function ResultsPage() {
             disabled={downloading}
             className="button-secondary disabled:opacity-50"
           >
-            📥 JSON
+            [JSON] Download JSON
           </button>
           <button
             onClick={() => handleDownload('markdown')}
             disabled={downloading}
             className="button-secondary disabled:opacity-50"
           >
-            📄 Markdown
+            [MD] Download Markdown
           </button>
           <button
             onClick={() => handleDownload('pdf')}
             disabled={downloading}
             className="button-secondary disabled:opacity-50"
           >
-            📋 PDF
+            [PDF] Download PDF
           </button>
         </div>
       </div>

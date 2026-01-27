@@ -104,7 +104,7 @@ export default function AnalysisForm() {
               />
               {resumeFile && (
                 <p className="mt-3 text-sm text-green-600">
-                  ✓ Selected: {resumeFile.name}
+                  [+] Selected: {resumeFile.name}
                 </p>
               )}
             </div>

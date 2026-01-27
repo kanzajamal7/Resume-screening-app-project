@@ -171,7 +171,7 @@ def generate_pdf_report(result: Dict, analysis_id: str) -> BinaryIO:
         elements.append(Paragraph("Red Flags", heading_style))
         
         for flag in result['red_flags']:
-            flag_text = Paragraph(f"⚠️ {flag}", styles['Normal'])
+            flag_text = Paragraph(f"WARNING: {flag}", styles['Normal'])
             elements.append(flag_text)
         
         elements.append(Spacer(1, 0.3*inch))
@@ -182,7 +182,7 @@ def generate_pdf_report(result: Dict, analysis_id: str) -> BinaryIO:
     if actions['good_fit_summary']:
         elements.append(Paragraph("Strengths", heading_style))
         for item in actions['good_fit_summary']:
-            elements.append(Paragraph(f"✓ {item}", styles['Normal']))
+            elements.append(Paragraph(f"[+] {item}", styles['Normal']))
         elements.append(Spacer(1, 0.2*inch))
     
     if actions['gaps']:

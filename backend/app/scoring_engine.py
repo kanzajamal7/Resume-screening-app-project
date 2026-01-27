@@ -415,7 +415,7 @@ class ScoringEngine:
         for kw in must_haves:
             if kw.lower() in resume_lower:
                 snippet = TextPreprocessor.find_snippet(resume_text, kw)
-                evidence.append(f"✓ {kw}: {snippet}")
+evidence.append(f"[+] {kw}: {snippet}")
         
         return CategoryScore(
             score=score,
@@ -467,7 +467,7 @@ class ScoringEngine:
             total_score += relevance
             
             if matches > 0:
-                evidence.append(f"✓ {exp['title']} ({exp['start_year']}-{exp['end_year']}): {matches} relevant keywords")
+                evidence.append(f"[+] {exp['title']} ({exp['start_year']}-{exp['end_year']}): {matches} relevant keywords")
         
         score = min(100, (total_score / len(experiences)) * 100)
         
@@ -497,15 +497,15 @@ class ScoringEngine:
             # Exact match
             if role in target_role or target_role in role:
                 score = 95
-                evidence.append(f"✓ Exact role match: {role}")
+                evidence.append(f"[+] Exact role match: {role}")
             # Partial match
             elif any(keyword in role for keyword in ['engineer', 'developer', 'analyst', 'lead']):
                 score = max(score, 70)
-                evidence.append(f"~ Adjacent role: {role}")
+                evidence.append(f"[~] Adjacent role: {role}")
         
         if not evidence:
             score = 20
-            evidence.append(f"✗ Limited role overlap")
+            evidence.append(f"[-] Limited role overlap")
         
         return CategoryScore(
             score=score,

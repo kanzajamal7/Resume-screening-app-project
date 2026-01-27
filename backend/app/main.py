@@ -278,7 +278,7 @@ def _generate_markdown_report(result: Dict) -> str:
     md += f"**Matched: {matched}/{total}**\n\n"
     
     for kw in result['must_have']:
-        status = "✓" if kw['matched'] else "✗"
+        status = "[+]" if kw['matched'] else "[-]"
         md += f"- {status} {kw['term']}\n"
     
     md += "\n### Nice-to-Have Keywords\n"
@@ -287,14 +287,14 @@ def _generate_markdown_report(result: Dict) -> str:
     md += f"**Matched: {matched_nice}/{total_nice}**\n\n"
     
     for kw in result['nice_to_have']:
-        status = "✓" if kw['matched'] else "✗"
+        status = "[+]" if kw['matched'] else "[-]"
         md += f"- {status} {kw['term']}\n"
     
     # Red flags
     if result['red_flags']:
         md += "\n## Red Flags\n\n"
         for flag in result['red_flags']:
-            md += f"- ⚠️ {flag}\n"
+            md += f"- WARNING: {flag}\n"
     
     # Actions
     md += "\n## Recommendations\n\n"
@@ -302,7 +302,7 @@ def _generate_markdown_report(result: Dict) -> str:
     if result['actions']['good_fit_summary']:
         md += "### Good Fit\n"
         for item in result['actions']['good_fit_summary']:
-            md += f"- ✓ {item}\n"
+            md += f"- [+] {item}\n"
     
     if result['actions']['gaps']:
         md += "\n### Gaps to Address\n"
