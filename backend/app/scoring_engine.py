@@ -415,8 +415,8 @@ class ScoringEngine:
         for kw in must_haves:
             if kw.lower() in resume_lower:
                 snippet = TextPreprocessor.find_snippet(resume_text, kw)
-evidence.append(f"[+] {kw}: {snippet}")
-        
+                evidence.append(f"[+] {kw}: {snippet}")
+
         return CategoryScore(
             score=score,
             details={
