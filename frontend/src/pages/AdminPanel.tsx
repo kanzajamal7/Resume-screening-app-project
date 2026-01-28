@@ -31,10 +31,8 @@ export default function AdminPanel() {
 
   const handleSave = async () => {
     try {
-      // Normalize weights to sum to 1
-      const total = Object.values(weights).reduce((a, b) => a + b, 0)
-      // Note: Normalized weights calculated but not persisted (no backend endpoint yet)
-      // Can be used for future implementation
+      // Note: Weight normalization and persistence not yet implemented
+      // Will be added when backend endpoint is available
 
       setMessage('Settings saved successfully')
       setTimeout(() => setMessage(''), 3000)
