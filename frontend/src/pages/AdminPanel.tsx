@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { getDefaultWeights } from '../api/client'
 
 export default function AdminPanel() {
@@ -33,13 +33,8 @@ export default function AdminPanel() {
     try {
       // Normalize weights to sum to 1
       const total = Object.values(weights).reduce((a, b) => a + b, 0)
-      const normalized = Object.entries(weights).reduce(
-        (acc, [key, val]) => ({
-          ...acc,
-          [key]: total > 0 ? val / total : val,
-        }),
-        {} as Record<string, number>
-      )
+      // Note: Normalized weights calculated but not persisted (no backend endpoint yet)
+      // Can be used for future implementation
 
       setMessage('Settings saved successfully')
       setTimeout(() => setMessage(''), 3000)
