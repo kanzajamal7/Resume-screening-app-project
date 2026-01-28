@@ -98,12 +98,12 @@ class KeywordExtractor:
     
     # Load tech stack dictionary
     TECH_STACK = {
-        'languages': ['python', 'java', 'javascript', 'typescript', 'sql', 'scala', 'r', 'c++', 'c#', 'go', 'rust', 'kotlin'],
-        'databases': ['mysql', 'postgresql', 'mongodb', 'cassandra', 'dynamodb', 'redis', 'elasticsearch', 'oracle', 'sql server'],
+        'languages': ['python', 'java', 'javascript', 'typescript', 'sql', 'scala', 'golang', 'c++', 'c#', 'rust', 'kotlin', 'r language'],
+        'databases': ['mysql', 'postgresql', 'mongodb', 'cassandra', 'dynamodb', 'redis', 'elasticsearch', 'oracle', 'sql server', 'snowflake', 'redshift', 'bigquery'],
         'cloud': ['aws', 'azure', 'gcp', 'google cloud', 'terraform', 'cloudformation'],
-        'bigdata': ['spark', 'hadoop', 'hive', 'kafka', 'flink', 'airflow', 'dbt', 'talend', 'informatica'],
+        'bigdata': ['spark', 'pyspark', 'hadoop', 'hive', 'kafka', 'flink', 'airflow', 'dbt', 'talend', 'informatica', 'iics', 'powerbi', 'tableau', 'etl'],
         'ml': ['tensorflow', 'pytorch', 'scikit-learn', 'xgboost', 'nlp', 'neural network', 'machine learning'],
-        'tools': ['git', 'docker', 'kubernetes', 'jenkins', 'gitlab', 'github', 'jira', 'confluence'],
+        'tools': ['git', 'docker', 'kubernetes', 'jenkins', 'gitlab', 'github', 'jira', 'confluence', 'ci/cd'],
     }
     
     # Flatten for easier lookup
@@ -149,18 +149,26 @@ class KeywordExtractor:
     
     @staticmethod
     def _extract_tech_terms(text: str) -> List[str]:
-        """Extract technical terms from text."""
+        """Extract technical terms from text with word boundary checking."""
         terms = []
         text_lower = text.lower()
-        
+
         for tech in KeywordExtractor.ALL_TECH:
-            if tech in text_lower:
-                terms.append(tech)
-        
-        # Also capture uppercase acronyms
-        acronyms = re.findall(r'\b[A-Z]{2,}\b', text)
+            # Use word boundaries to avoid partial matches for short terms
+            if len(tech) <= 3:
+                # For very short terms, require word boundaries
+                pattern = r'\b' + re.escape(tech) + r'\b'
+                if re.search(pattern, text_lower):
+                    terms.append(tech)
+            else:
+                # For longer terms, simple substring match is fine
+                if tech in text_lower:
+                    terms.append(tech)
+
+        # Also capture uppercase acronyms (3+ letters)
+        acronyms = re.findall(r'\b[A-Z]{3,}\b', text)
         terms.extend([a.lower() for a in acronyms])
-        
+
         return list(set(terms))
     
     @staticmethod
