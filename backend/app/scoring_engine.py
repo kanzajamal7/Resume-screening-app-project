@@ -131,15 +131,21 @@ class KeywordExtractor:
                 must_haves.extend(quoted)
         
         # Second: If no explicit must-haves found, extract ALL tech skills from JD
-        # (they're assumed to be required if job description mentions them)
+        # Treat techs mentioned in the JD as required (must-have) unless the JD
+        # explicitly marks them as "preferred"/nice-to-have. This avoids classifying
+        # all terms as nice-to-have.
         if not must_haves:
             all_techs = KeywordExtractor._extract_tech_terms(text)
-            # Remove nice-to-haves from this list
+            # If the JD contains explicit nice-to-have lines, remove those terms
+            explicit_nice = []
             for line in lines:
                 if any(kw in line.lower() for kw in nice_keywords):
                     nice_terms = KeywordExtractor._extract_tech_terms(line)
-                    all_techs = [t for t in all_techs if t not in nice_terms]
-            must_haves = all_techs[:int(len(all_techs) * 0.7)] if all_techs else []
+                    explicit_nice.extend(nice_terms)
+            if explicit_nice:
+                must_haves = [t for t in all_techs if t not in explicit_nice]
+            else:
+                must_haves = all_techs
         
         return list(set(must_haves))  # Remove duplicates
     
@@ -158,11 +164,11 @@ class KeywordExtractor:
                 terms = KeywordExtractor._extract_tech_terms(line)
                 nice_to_haves.extend(terms)
         
-        # Second: If no explicit nice-to-haves found, use remaining tech skills
+        # Second: If no explicit nice-to-haves found, do NOT automatically classify
+        # all remaining techs as nice-to-have. Return empty — the UI will show
+        # detected skills and the must-have list will be used to mark required items.
         if not nice_to_haves:
-            all_techs = KeywordExtractor._extract_tech_terms(text)
-            must_haves = KeywordExtractor.extract_must_haves(text)
-            nice_to_haves = [t for t in all_techs if t not in must_haves]
+            nice_to_haves = []
         
         return list(set(nice_to_haves))  # Remove duplicates
     
@@ -188,22 +194,18 @@ class KeywordExtractor:
         # Also capture uppercase acronyms (3+ letters) - likely tech stacks
         acronyms = re.findall(r'\b[A-Z]{3,}\b', text)
         terms.extend([a.lower() for a in acronyms if len(a) >= 3])
-        
-        # Extract common skill patterns: "word1/word2" (e.g., "Node.js/Python")
-        tech_patterns = re.findall(r'\b([A-Za-z]+(?:\.[a-z]+)?)\s*(?:/|,)\s*([A-Za-z]+(?:\.[a-z]+)?)\b', text)
+        # Extract common skill patterns like "Node.js/Python" but only keep
+        # those that match known tech tokens or common extensions.
+        tech_patterns = re.findall(r'\b([A-Za-z0-9_.+-]+)\s*(?:/|,)\s*([A-Za-z0-9_.+-]+)\b', text)
         for pattern in tech_patterns:
-            terms.extend([p.lower() for p in pattern])
-        
-        # Extract comma-separated tech skills (common format)
-        # Look for lines with commas and multiple tech terms
-        potential_skills = re.findall(r'([A-Za-z][A-Za-z0-9]*(?:\.[A-Za-z0-9]+)?)', text)
-        for skill in potential_skills:
-            skill_lower = skill.lower()
-            # Check if it's a known tech or looks like a valid skill (capitalized or known)
-            if skill_lower in KeywordExtractor.ALL_TECH or (len(skill) > 2 and skill[0].isupper()):
-                terms.append(skill_lower)
+            for p in pattern:
+                p_low = p.lower()
+                if p_low in KeywordExtractor.ALL_TECH:
+                    terms.append(p_low)
 
-        return list(set(terms))  # Remove duplicates
+        # Final filter: only keep values that are in known tech set or common acronyms
+        filtered = [t for t in set(terms) if t in KeywordExtractor.ALL_TECH or re.match(r'^[a-z0-9_.+-]{2,}$', t)]
+        return filtered
     
     @staticmethod
     def extract_years_required(text: str) -> Optional[int]:
@@ -310,8 +312,8 @@ class ResumeParser:
         # Second: Auto-detect education anywhere in resume (fallback)
         # Look for common degree patterns
         degree_patterns = [
-            r'(bachelor|b\.s\.|b\.a\.|bs|ba)\b',
-            r'(master|m\.s\.|m\.a\.|ms|ma)\b',
+            r'(bachelor|b\.s\.|b\.a\.|bs|ba|bba|bsc|b\.sc\.|bcom|b\.com\.|btech|b\.tech\.)\b',
+            r'(master|m\.s\.|m\.a\.|ms|ma|mba|msc|m\.sc\.)\b',
             r'(phd|doctorate|ph\.d\.|doctorat)\b',
             r'(certificate|certification|certified)\b',
         ]
@@ -323,6 +325,26 @@ class ResumeParser:
                     education.append({'type': degree_type})
         
         return education
+
+    @staticmethod
+    def extract_skills(text: str) -> List[str]:
+        """Extract skills from resume - auto-detect without requiring SKILLS section."""
+        skills = []
+
+        # First: Try to find explicit skills section
+        section_pattern = r'(skills|technical\s*skills|competencies|technical\s*competencies)([\s\S]*?)(?=\n[A-Z][A-Z\s]*\n|\Z)'
+        match = re.search(section_pattern, text, re.IGNORECASE)
+
+        if match:
+            section_text = match.group(2)
+            # Extract technical terms from skills section
+            skills = KeywordExtractor._extract_tech_terms(section_text)
+        else:
+            # Fallback: Extract all tech terms from entire resume
+            all_terms = KeywordExtractor._extract_tech_terms(text)
+            skills = all_terms
+
+        return list(set(skills))  # Remove duplicates
     
     @staticmethod
     def extract_skills(text: str) -> List[str]:
