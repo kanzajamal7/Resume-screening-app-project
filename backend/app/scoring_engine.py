@@ -113,46 +113,66 @@ class KeywordExtractor:
     
     @staticmethod
     def extract_must_haves(text: str) -> List[str]:
-        """Extract must-have keywords from job description."""
-        text = TextPreprocessor.preprocess(text)
+        """Extract must-have keywords from job description - smart detection without headings."""
+        text_lower = TextPreprocessor.preprocess(text)
         lines = text.split('\n')
         
         must_haves = []
-        must_keywords = ['must have', 'required', 'requirement', 'minimum', 'need ', 'experience with', 'expertise in']
+        must_keywords = ['must have', 'required', 'requirement', 'minimum', 'need ', 'experience with', 'expertise in', 'essential', 'mandatory']
+        nice_keywords = ['preferred', 'plus', 'bonus', 'nice to have', 'additional', 'beneficial', 'optional']
         
+        # First: Extract from explicit "must-have" sections
         for line in lines:
-            if any(kw in line for kw in must_keywords):
-                # Extract technical terms and skills
+            line_lower = line.lower()
+            if any(kw in line_lower for kw in must_keywords):
                 terms = KeywordExtractor._extract_tech_terms(line)
                 must_haves.extend(terms)
-                # Also extract quoted terms and specific role keywords
-                quoted = re.findall(r'"([^"]+)"', line)
+                quoted = re.findall(r'"([^"]+)"', line, re.IGNORECASE)
                 must_haves.extend(quoted)
+        
+        # Second: If no explicit must-haves found, extract ALL tech skills from JD
+        # (they're assumed to be required if job description mentions them)
+        if not must_haves:
+            all_techs = KeywordExtractor._extract_tech_terms(text)
+            # Remove nice-to-haves from this list
+            for line in lines:
+                if any(kw in line.lower() for kw in nice_keywords):
+                    nice_terms = KeywordExtractor._extract_tech_terms(line)
+                    all_techs = [t for t in all_techs if t not in nice_terms]
+            must_haves = all_techs[:int(len(all_techs) * 0.7)] if all_techs else []
         
         return list(set(must_haves))  # Remove duplicates
     
     @staticmethod
     def extract_nice_to_haves(text: str) -> List[str]:
-        """Extract nice-to-have keywords from job description."""
-        text = TextPreprocessor.preprocess(text)
+        """Extract nice-to-have keywords from job description - smart detection."""
+        text_lower = TextPreprocessor.preprocess(text)
         lines = text.split('\n')
         
         nice_to_haves = []
-        nice_keywords = ['preferred', 'plus', 'bonus', 'nice to have', 'additional', 'beneficial']
+        nice_keywords = ['preferred', 'plus', 'bonus', 'nice to have', 'additional', 'beneficial', 'optional']
         
+        # First: Extract from explicit "nice-to-have" sections
         for line in lines:
-            if any(kw in line for kw in nice_keywords):
+            if any(kw in line.lower() for kw in nice_keywords):
                 terms = KeywordExtractor._extract_tech_terms(line)
                 nice_to_haves.extend(terms)
         
-        return list(set(nice_to_haves))
+        # Second: If no explicit nice-to-haves found, use remaining tech skills
+        if not nice_to_haves:
+            all_techs = KeywordExtractor._extract_tech_terms(text)
+            must_haves = KeywordExtractor.extract_must_haves(text)
+            nice_to_haves = [t for t in all_techs if t not in must_haves]
+        
+        return list(set(nice_to_haves))  # Remove duplicates
     
     @staticmethod
     def _extract_tech_terms(text: str) -> List[str]:
-        """Extract technical terms from text with word boundary checking."""
+        """Extract technical terms from text - comprehensive search."""
         terms = []
         text_lower = text.lower()
 
+        # Search through all known tech stacks
         for tech in KeywordExtractor.ALL_TECH:
             # Use word boundaries to avoid partial matches for short terms
             if len(tech) <= 3:
@@ -165,11 +185,25 @@ class KeywordExtractor:
                 if tech in text_lower:
                     terms.append(tech)
 
-        # Also capture uppercase acronyms (3+ letters)
+        # Also capture uppercase acronyms (3+ letters) - likely tech stacks
         acronyms = re.findall(r'\b[A-Z]{3,}\b', text)
-        terms.extend([a.lower() for a in acronyms])
+        terms.extend([a.lower() for a in acronyms if len(a) >= 3])
+        
+        # Extract common skill patterns: "word1/word2" (e.g., "Node.js/Python")
+        tech_patterns = re.findall(r'\b([A-Za-z]+(?:\.[a-z]+)?)\s*(?:/|,)\s*([A-Za-z]+(?:\.[a-z]+)?)\b', text)
+        for pattern in tech_patterns:
+            terms.extend([p.lower() for p in pattern])
+        
+        # Extract comma-separated tech skills (common format)
+        # Look for lines with commas and multiple tech terms
+        potential_skills = re.findall(r'([A-Za-z][A-Za-z0-9]*(?:\.[A-Za-z0-9]+)?)', text)
+        for skill in potential_skills:
+            skill_lower = skill.lower()
+            # Check if it's a known tech or looks like a valid skill (capitalized or known)
+            if skill_lower in KeywordExtractor.ALL_TECH or (len(skill) > 2 and skill[0].isupper()):
+                terms.append(skill_lower)
 
-        return list(set(terms))
+        return list(set(terms))  # Remove duplicates
     
     @staticmethod
     def extract_years_required(text: str) -> Optional[int]:
@@ -258,20 +292,58 @@ class ResumeParser:
     
     @staticmethod
     def extract_education(text: str) -> List[Dict]:
-        """Extract education section."""
+        """Extract education section - auto-detect anywhere in resume."""
         education = []
+        text_lower = text.lower()
         
-        section_pattern = r'(education|qualifications)([\s\S]*?)(?=\n[A-Z][A-Z\s]*\n|\Z)'
+        # First: Look for explicit education sections
+        section_pattern = r'(education|qualifications|degree|certification)([\s\S]*?)(?=\n[A-Z][A-Z\s]*\n|\Z)'
         match = re.search(section_pattern, text, re.IGNORECASE)
         
         if match:
             section_text = match.group(2)
             # Look for degree keywords
-            for degree_type in ['bachelor', 'master', 'phd', 'certificate']:
+            for degree_type in ['bachelor', 'master', 'phd', 'doctorate', 'certificate', 'certification', 'associate', 'diploma']:
                 if degree_type in section_text.lower():
                     education.append({'type': degree_type})
         
+        # Second: Auto-detect education anywhere in resume (fallback)
+        # Look for common degree patterns
+        degree_patterns = [
+            r'(bachelor|b\.s\.|b\.a\.|bs|ba)\b',
+            r'(master|m\.s\.|m\.a\.|ms|ma)\b',
+            r'(phd|doctorate|ph\.d\.|doctorat)\b',
+            r'(certificate|certification|certified)\b',
+        ]
+        
+        for pattern in degree_patterns:
+            if re.search(pattern, text_lower):
+                degree_type = pattern.split('|')[0].strip('(').lower()
+                if degree_type not in [e.get('type', '') for e in education]:
+                    education.append({'type': degree_type})
+        
         return education
+    
+    @staticmethod
+    def extract_skills(text: str) -> List[str]:
+        """Extract skills from resume - auto-detect without requiring SKILLS section."""
+        skills = []
+        
+        # First: Try to find explicit skills section
+        section_pattern = r'(skills|technical\s*skills|competencies|technical\s*competencies)([\s\S]*?)(?=\n[A-Z][A-Z\s]*\n|\Z)'
+        match = re.search(section_pattern, text, re.IGNORECASE)
+        
+        if match:
+            section_text = match.group(2)
+            # Extract technical terms from skills section
+            skills = KeywordExtractor._extract_tech_terms(section_text)
+        else:
+            # Fallback: Extract all tech terms from entire resume
+            # (appears in work descriptions, experience, etc.)
+            all_terms = KeywordExtractor._extract_tech_terms(text)
+            skills = all_terms
+        
+        return list(set(skills))  # Remove duplicates
     
     @staticmethod
     def calculate_total_years(experiences: List[Dict]) -> float:

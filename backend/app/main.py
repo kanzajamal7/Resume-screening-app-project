@@ -256,7 +256,7 @@ def _generate_markdown_report(result: Dict) -> str:
         'education_match': 'E) Education/Certs Match',
         'tooling_stack_match': 'F) Tooling/Stack Match',
         'recency_match': 'G) Recency Match',
-        'red_flags': 'H) Red Flag Detection'
+        'red_flags': 'H) Compatibility Check'
     }
     
     for key, display_name in categories_display.items():
@@ -290,9 +290,9 @@ def _generate_markdown_report(result: Dict) -> str:
         status = "[+]" if kw['matched'] else "[-]"
         md += f"- {status} {kw['term']}\n"
     
-    # Red flags
+    # Compatibility check
     if result['red_flags']:
-        md += "\n## Red Flags\n\n"
+        md += "\n## Compatibility Issues\n\n"
         for flag in result['red_flags']:
             md += f"- WARNING: {flag}\n"
     

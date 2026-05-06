@@ -101,7 +101,7 @@ export default function ResultsPage() {
     education_match: 'Education/Certs',
     tooling_stack_match: 'Tooling/Stack',
     recency_match: 'Recency',
-    red_flags: 'Red Flags',
+    red_flags: 'Compatibility Check',
   }
 
   // Prepare data for charts
@@ -334,12 +334,12 @@ export default function ResultsPage() {
         </div>
       </div>
 
-      {/* Red Flags */}
+      {/* Compatibility Check */}
       {result.red_flags && result.red_flags.length > 0 && (
         <div className="card mb-8 bg-red-50 border-2 border-red-200">
           <h3 className="text-2xl font-bold mb-4 text-red-700 flex items-center">
             <span className="text-3xl mr-2">⚠️</span>
-            Red Flags Detected
+            Potential Compatibility Issues
           </h3>
           <ul className="space-y-2">
             {result.red_flags.map((flag, i) => (

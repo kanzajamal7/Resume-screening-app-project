@@ -163,7 +163,7 @@ export default function AdminPanel() {
               <strong>Recency (G):</strong> Bonus for recent relevant experience
             </p>
             <p>
-              <strong>Red Flags (H):</strong> Penalties for missing must-haves, gaps, job hopping
+              <strong>Compatibility Check (H):</strong> Penalties for missing must-haves, gaps, job hopping
             </p>
           </div>
         </section>
